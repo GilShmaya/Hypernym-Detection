@@ -79,7 +79,9 @@ public class FeaturesVectorBuilder {
         }
     }
 
-    // TODO
+    /**
+     * * Creates a features vector for each noun pair.
+     */
     public static class ReducerClass extends Reducer<PairOfNouns, PatternInfo, Text, Text> {
         private PairOfNouns currPairOfNouns;
         private int featuresVectorLength;
@@ -120,14 +122,15 @@ public class FeaturesVectorBuilder {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        long featuresVectorLength = FeaturesVectorLength.getInstance().getLength();
-        conf.setLong("Length", featuresVectorLength);
+        int featuresVectorLength = FeaturesVectorLength.getInstance().getLength();
+        conf.setInt("Length", featuresVectorLength);
         Job job = Job.getInstance(conf, "FeaturesVectorBuilder");
         job.setJarByClass(FeaturesVectorBuilder.class);
         job.setNumReduceTasks(1);
-        MultipleInputs.addInputPath(job, new Path(.BUCKET_PATH + "/Step1"), SequenceFileInputFormat.class,
+        MultipleInputs.addInputPath(job, new Path(MainLogic.BUCKET_PATH + "/Step1"), SequenceFileInputFormat.class,
                 MapperClass.class);
-        MultipleInputs.addInputPath(job, new Path(MainLogic.BUCKET_PATH + "/ANNOTATED_SET"), TextInputFormat.class, MapperClassAnnotated.class);
+        MultipleInputs.addInputPath(job, new Path(MainLogic.BUCKET_PATH + "/hypernym.txt"), TextInputFormat.class,
+                MapperClassAnnotated.class);
         job.setReducerClass(ReducerClass.class);
         job.setMapOutputKeyClass(PairOfNouns.class);
         job.setMapOutputValueClass(PatternInfo.class);
@@ -137,6 +140,4 @@ public class FeaturesVectorBuilder {
         job.setOutputFormatClass(TextOutputFormat.class);
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
-
-
 }
