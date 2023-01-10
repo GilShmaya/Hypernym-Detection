@@ -18,7 +18,7 @@ public class PatternParser {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        conf.set("dpMin", args[1]);
+        conf.set("dpMin", args[1]); // TODO: see reference in FeaturesVectorBuilder line 93 for extract this data
         Job job = Job.getInstance(conf, "PatternParser");
         job.setJarByClass(PatternParser.class);
         job.setNumReduceTasks(1);
