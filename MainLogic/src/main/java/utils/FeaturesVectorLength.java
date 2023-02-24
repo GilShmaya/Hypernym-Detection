@@ -30,7 +30,7 @@ public class FeaturesVectorLength {
         }
     }
 
-    private FeaturesVectorLength() {
+    FeaturesVectorLength() {
         BasicConfigurator.configure();
         s3 = (AmazonS3) ((AmazonS3ClientBuilder) AmazonS3Client.builder().withRegion(Regions.US_EAST_1)).build();
     }

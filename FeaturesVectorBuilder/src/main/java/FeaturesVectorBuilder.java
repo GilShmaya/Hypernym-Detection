@@ -37,8 +37,7 @@ public class FeaturesVectorBuilder {
 
         @Override
         public void map(PairOfNouns key, IntWritable value, Context context) throws IOException, InterruptedException {
-            context.write(new PairOfNouns(key.getWord1(), key.getWord2(),
-                            new BooleanWritable(false), new IntWritable(key.getTotal().get())),
+            context.write(new PairOfNouns(key.getWord1(), key.getWord2(), new IntWritable(key.getTotal().get())),
                     new PatternInfo(value, key.getTotal()));
         }
     }
@@ -60,9 +59,9 @@ public class FeaturesVectorBuilder {
             englishStemmer.stem();
             String word2 = englishStemmer.getCurrent();
 
-            BooleanWritable isHypernym = new BooleanWritable(Boolean.parseBoolean(arr[2]));
+            BooleanWritable isHypernym = new BooleanWritable(Boolean.parseBoolean(arr[2])); // todo: necessary ?
             PairOfNouns pairOfNouns =
-                    new PairOfNouns(new Text(word1), new Text(word2), isHypernym, new IntWritable(-1));
+                    new PairOfNouns(new Text(word1), new Text(word2), new IntWritable(-1));
             context.write(pairOfNouns, new PatternInfo(new IntWritable(-1), new IntWritable(-1)));
         }
     }
