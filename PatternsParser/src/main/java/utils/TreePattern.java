@@ -1,18 +1,14 @@
 package utils;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 
 import java.util.List;
-
-import utils.FeaturesVectorLength;
-import utils.PairOfNouns;
 
 public class TreePattern {
     private String StringPattern;
     private PairOfNouns pairOfNouns;
 
-    public TreePattern(List<Node> path, IntWritable total_count) {
+    public TreePattern(List<Node> path, int total_count) {
 
         Node treeSource =path.get(0);
         Node treeTarget = path.get(path.size()-1);

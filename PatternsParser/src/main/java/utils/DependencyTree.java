@@ -10,10 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DependencyTree {
+    private final static List<String> listOfNouns = Arrays.asList("nn", "nns", "nnp", "nnps");
 
-    private SimpleDirectedGraph<Node, DefaultEdge> tree;
-    private int count;
-    private List<TreePattern> patterns;
+    private final SimpleDirectedGraph<Node, DefaultEdge> tree;
+    private final int count;
+    private final List<TreePattern> patterns;
+
 
     public DependencyTree(String line) {
         String[] splitLine = line.split("\t");
@@ -31,7 +33,6 @@ public class DependencyTree {
         }
         // find the tree patterns
         this.patterns = new ArrayList<>();
-        List<String> listOfNouns = Arrays.asList("nn", "nns", "nnp", "nnps");
         findPatterns(treeNodes, listOfNouns);
     }
 

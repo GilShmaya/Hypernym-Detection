@@ -1,26 +1,33 @@
 package utils;
 
+import org.tartarus.snowball.ext.englishStemmer;
+
 public class Node {
 
-    private String word;
-    private String ptag;
-    private String label;
-    private int head;
+    private final String word; // the actual word in the corpus
+    private final String pTag; // part of speech tag
+    private final String label; // depth label
+    private final int head; // the head of the current token
+    private final englishStemmer englishStemmer = new englishStemmer();
 
     public Node(String[] split) {
         String stem = StringBuilder(split);
 
         // todo: check stemmer
+        englishStemmer.setCurrent(arr[0]);
+        englishStemmer.stem();
+        String word1 = englishStemmer.getCurrent();
+
         Stemmer stemmer = new Stemmer();
-        stemmer.add(stem.toCharArray(), stem.length());
-        stemmer.stem();
+//        stemmer.add(stem.toCharArray(), stem.length());
+//        stemmer.stem();
         this.word = stemmer.toString();
-        this.ptag = split[split.length - 3].toLowerCase();
+        this.pTag = split[split.length - 3].toLowerCase();
         this.label = split[split.length - 2];
         this.head = Integer.parseInt(split[split.length - 1]);
     }
 
-    public static String StringBuilder (String[] split) {
+    public static String StringBuilder(String[] split) {
         StringBuilder builder = new StringBuilder();
         for (int index = 0; index < split.length - 3; index++) {
             builder.append(split[index]).append("/");
@@ -35,7 +42,7 @@ public class Node {
     }
 
     public String getPosTag() {
-        return ptag;
+        return pTag;
     }
 
     public String getDepLabel() {

@@ -38,7 +38,7 @@ public class PatternParser {
     public static class MapperClass extends Mapper<LongWritable, Text, Text, PairOfNouns> {
         @Override
         public void map(LongWritable lineId, Text line, Context context) throws IOException, InterruptedException {
-            DependencyTree tree = new DependencyTree(line.toString());
+            DependencyTree tree = new DependencyTree(line.toString()); // line = ?  treeNodes  count
             for (TreePattern tp : tree.patterns()) {
                 Text text = new Text(tp.getPattern());
                 context.write(text, tp.getPair());
@@ -61,13 +61,10 @@ public class PatternParser {
             HashSet<String> set = new HashSet<>(curr_dpMin);
             ArrayList<PairOfNouns> list = new ArrayList<>();
             for (PairOfNouns pair : values) {
-                // System.err.println(" PAIR IS: " + nounPair.toString()); // todo : delete?
                 list.add(new PairOfNouns(new Text(pair.getWord1().toString()), new Text(pair.getWord2().toString()), pair.getTotal()));
                 if (!set.contains(pair.getWord1().toString()+ " "+ pair.getWord2().toString()))
                     set.add(pair.getWord1().toString()+ " "+ pair.getWord2().toString());
             }
-            // System.err.println("START INDEX " + i + " key " + key + "values size " + cache.size() + " set size " + set.size());
-            // todo : delete?
             if(checkDPmin(curr_dpMin, set, list, context, i, key)) {
                 i+=1;
             }
@@ -133,7 +130,7 @@ public class PatternParser {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        conf.set("dpMin", args[1]); // TODO: see reference in FeaturesVectorBuilder line 93 for extract this data
+        conf.set("dpMin", args[1]);
         Job job = Job.getInstance(conf, "PatternParser");
         job.setJarByClass(PatternParser.class);
         job.setNumReduceTasks(1);
