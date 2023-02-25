@@ -50,6 +50,10 @@ public class PatternParser {
         private int curr_dpMin;
         private int i;
 
+        public enum Counter {
+            N
+        }
+
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
             super.setup(context);
@@ -67,6 +71,7 @@ public class PatternParser {
             }
             if(checkDPmin(curr_dpMin, set, list, context, i, key)) {
                 i+=1;
+                context.getCounter(PatternParser.ReducerClass.Counter.N).increment(1);
             }
         }
 
@@ -95,36 +100,6 @@ public class PatternParser {
                 return false;
             }
         }
-
-
-        // todo : check if necessary because of adding the Counter
-
-         //@Override
-        /*protected void cleanup(Context context) throws IOException, InterruptedException {
-            super.cleanup(context);
-            try {
-                String totals_time = context.getConfiguration().get("TOTALS_TIME");
-                String file_name = "total_" + index + "_" + totals_time;
-                System.err.println("Uploading file name:" + file_name);
-                File file = new File(file_name);
-                file.createNewFile();
-                S3Client s3 = S3Client.builder().region(Region.US_EAST_1).build();
-                s3.putObject(PutObjectRequest.builder().acl(ObjectCannedACL.PUBLIC_READ_WRITE)
-                                .bucket(context.getConfiguration().get("BUCKET_NAME"))
-                                .key("totals/" + file_name)
-                                .build()
-                        , RequestBody.fromFile(new File(file_name)));
-                file.delete();
-
-                s3.putObject(PutObjectRequest.builder().acl(ObjectCannedACL.PUBLIC_READ_WRITE)
-                                .bucket(context.getConfiguration().get("BUCKET_NAME"))
-                                .key("features"+this.dpMin+".txt")
-                                .build()
-                        , RequestBody.fromFile(new File("features.txt")));
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-        }*/
     }
 
 
@@ -139,18 +114,16 @@ public class PatternParser {
         job.setMapOutputValueClass(PairOfNouns.class);
         job.setOutputKeyClass(PairOfNouns.class);
         job.setOutputValueClass(IntWritable.class);
-        MultipleInputs.addInputPath(job,new Path(MainLogic.BUCKET_PATH + "training_input1"), TextInputFormat.class, //
-                // TODO: change the training file name?
+        MultipleInputs.addInputPath(job,new Path(MainLogic.BUCKET_PATH + "/training_input1/biarcs.00-of-99.gz"), TextInputFormat.class,
                 MapperClass.class);
-        MultipleInputs.addInputPath(job,new Path(MainLogic.BUCKET_PATH + "training_input2"), TextInputFormat.class,
-                MapperClass.class);                 // TODO: change the training file name?
+        MultipleInputs.addInputPath(job,new Path(MainLogic.BUCKET_PATH + "/annotated_set/hypernym.txt"), TextInputFormat.class,
+                MapperClass.class);
         FileOutputFormat.setOutputPath(job, new Path(MainLogic.BUCKET_PATH + "/Step1"));
         job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
         if (job.waitForCompletion(true)) {
             Counters counters = job.getCounters();
-            // todo : field for counter ?
-            Counter counter = counters.findCounter(PatternParser.ReducerClass.Counter.N); // TODO: change
+            Counter counter = counters.findCounter(PatternParser.ReducerClass.Counter.N);
             FeaturesVectorLength.getInstance().setLength((int) counter.getValue());
             System.exit(0);
         }

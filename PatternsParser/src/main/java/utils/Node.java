@@ -8,20 +8,13 @@ public class Node {
     private final String pTag; // part of speech tag
     private final String label; // depth label
     private final int head; // the head of the current token
-    private final englishStemmer englishStemmer = new englishStemmer();
 
     public Node(String[] split) {
-        String stem = StringBuilder(split);
-
-        // todo: check stemmer
-        englishStemmer.setCurrent(arr[0]);
+        org.tartarus.snowball.ext.englishStemmer englishStemmer = new englishStemmer();
+        englishStemmer.setCurrent(StringBuilder(split));
         englishStemmer.stem();
-        String word1 = englishStemmer.getCurrent();
-
-        Stemmer stemmer = new Stemmer();
-//        stemmer.add(stem.toCharArray(), stem.length());
-//        stemmer.stem();
-        this.word = stemmer.toString();
+        
+        this.word = englishStemmer.getCurrent();
         this.pTag = split[split.length - 3].toLowerCase();
         this.label = split[split.length - 2];
         this.head = Integer.parseInt(split[split.length - 1]);

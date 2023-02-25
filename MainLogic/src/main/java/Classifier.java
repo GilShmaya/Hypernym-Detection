@@ -5,7 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.autoscaling.model.Instance;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.S3Object;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -22,7 +27,6 @@ import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.unsupervised.attribute.Remove;
 
 public class Classifier {
-    private static String BUCKET_NAME = "dsp202-ass2-guy-tal"; // todo : change bucket name
     private static String[] features;
     private static String dpMin = "100"; // todo : check
 
@@ -212,8 +216,12 @@ public class Classifier {
     public static String[] getFeatures() {
         String filename = "features" + dpMin + ".txt";
 //        String filename="features25"+".txt";
-        S3Client s3= S3Client.builder().region(Region.US_EAST_1).build();
-        s3.getObject(GetObjectRequest.builder().bucket(BUCKET_NAME).key(filename).build()
+        AmazonS3 s3 = (AmazonS3) ((AmazonS3ClientBuilder) AmazonS3Client.builder().withRegion(Regions.US_EAST_1)).build();
+        S3Object s3Object = s3.getObject(MainLogic.BUCKET_PATH, filename);
+        InputStream objectContent = s3Object.getObjectContent();
+
+//        S3Client s3= S3Client.builder().region(Region.US_EAST_1).build();
+        s3.getObject(GetObjectRequest.builder().bucket(MainLogic.BUCKET_PATH).key(filename).build()
                 , ResponseTransformer.toFile(Paths.get(filename)));
         try {
             FileReader fileReader = new FileReader(filename);
