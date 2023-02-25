@@ -13,17 +13,17 @@ public class Node {
         org.tartarus.snowball.ext.englishStemmer englishStemmer = new englishStemmer();
         englishStemmer.setCurrent(StringBuilder(split));
         englishStemmer.stem();
-        
+
         this.word = englishStemmer.getCurrent();
         this.pTag = split[split.length - 3].toLowerCase();
         this.label = split[split.length - 2];
         this.head = Integer.parseInt(split[split.length - 1]);
     }
 
-    public static String StringBuilder(String[] split) {
+    public static String StringBuilder(String[] splitted) {
         StringBuilder builder = new StringBuilder();
-        for (int index = 0; index < split.length - 3; index++) {
-            builder.append(split[index]).append("/");
+        for (int i = 0; i < splitted.length - 3; i++) {
+            builder.append(splitted[i]).append("/");
         }
         builder.setLength(builder.length() - 1);
         String to_stem = builder.toString();

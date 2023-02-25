@@ -31,7 +31,7 @@ import java.io.IOException;
 public class FeaturesVectorBuilder {
 
     /***
-     * * Map every line of PatternsParser's output into <pairOfNouns(w1, w2, false, total), patternIndex>
+     * * Map every line of PatternParser's output into <pairOfNouns(w1, w2, false, total), patternIndex>
      */
     public static class MapperClass extends Mapper<PairOfNouns, IntWritable, PairOfNouns, PatternInfo> {
 
@@ -69,7 +69,7 @@ public class FeaturesVectorBuilder {
 
     /***
      * * Defines the partition policy of sending the key-value the Mapper created to the reducers. The annotated pair
-     * * should arrive before PatternsParser's output
+     * * should arrive before PatternParser's output
      */
     public static class PartitionerClass extends Partitioner<PairOfNouns, PatternInfo> { // TODO: remove?
         public int getPartition(PairOfNouns key, PatternInfo value, int numPartitions) {
@@ -97,7 +97,7 @@ public class FeaturesVectorBuilder {
             if (key.getTotal().get() == -1) { // annotated pair
                 currPairOfNouns = key;
             } else if (this.currPairOfNouns != null && currPairOfNouns.getWord1().equals(key.getWord1()) &&
-                    // PatternsParser's output
+                    // PatternParser's output
                     currPairOfNouns.getWord2().equals(key.getWord2())) {
 
                 Long[] featuresVector = new Long[this.featuresVectorLength]; // initialize features vector
@@ -128,7 +128,7 @@ public class FeaturesVectorBuilder {
         job.setNumReduceTasks(1);
         MultipleInputs.addInputPath(job, new Path(MainLogic.BUCKET_PATH + "/Step1"), SequenceFileInputFormat.class,
                 MapperClass.class);
-        MultipleInputs.addInputPath(job, new Path(MainLogic.BUCKET_PATH + "/hypernym.txt"), TextInputFormat.class,
+        MultipleInputs.addInputPath(job, new Path(MainLogic.BUCKET_PATH + "/annotated_set/hypernym.txt"), TextInputFormat.class,
                 MapperClassAnnotated.class);
         job.setReducerClass(ReducerClass.class);
         job.setMapOutputKeyClass(PairOfNouns.class);

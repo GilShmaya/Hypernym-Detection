@@ -29,11 +29,11 @@ public class PairOfNouns implements WritableComparable<PairOfNouns> {
         this.total = new IntWritable(total.get());
     }
 
-    public PairOfNouns(Text text1, Text text2, int totalCount) {
+    public PairOfNouns(Text word1, Text word2, int total) {
         this.word1 = word1;
         this.word2 = word2;
         this.isHypernym = new BooleanWritable(false);
-        this.total = new IntWritable(total.get());
+        this.total = new IntWritable(total);
     }
 
     public int compareTo(PairOfNouns o) {

@@ -105,7 +105,7 @@ public class PatternParser {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        conf.set("dpMin", args[1]);
+        conf.set("dpMin", args[2]);
         Job job = Job.getInstance(conf, "PatternParser");
         job.setJarByClass(PatternParser.class);
         job.setNumReduceTasks(1);
@@ -116,7 +116,7 @@ public class PatternParser {
         job.setOutputValueClass(IntWritable.class);
         MultipleInputs.addInputPath(job,new Path(MainLogic.BUCKET_PATH + "/training_input1/biarcs.00-of-99.gz"), TextInputFormat.class,
                 MapperClass.class);
-        MultipleInputs.addInputPath(job,new Path(MainLogic.BUCKET_PATH + "/annotated_set/hypernym.txt"), TextInputFormat.class,
+        MultipleInputs.addInputPath(job,new Path(MainLogic.BUCKET_PATH + "/training_input1/biarcs.01-of-99.gz"), TextInputFormat.class,
                 MapperClass.class);
         FileOutputFormat.setOutputPath(job, new Path(MainLogic.BUCKET_PATH + "/Step1"));
         job.setOutputFormatClass(SequenceFileOutputFormat.class);

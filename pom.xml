@@ -11,7 +11,7 @@
     <modules>
         <module>MainLogic</module>
         <module>FeaturesVectorBuilder</module>
-        <module>PatternsParser</module>
+        <module>PatternParser</module>
     </modules>
 
     <dependencyManagement>

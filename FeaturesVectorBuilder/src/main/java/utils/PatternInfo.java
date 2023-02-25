@@ -11,6 +11,11 @@ public class PatternInfo implements Writable {
     private IntWritable patternIndex;
     private IntWritable occurrences;
 
+    public PatternInfo() {
+        this.patternIndex = new IntWritable();
+        this.occurrences = new IntWritable();
+    }
+
     public PatternInfo(IntWritable pattern, IntWritable total) {
         this.patternIndex = pattern;
         this.occurrences = total;
