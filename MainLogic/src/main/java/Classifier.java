@@ -1,26 +1,22 @@
 import java.io.BufferedReader;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.autoscaling.model.Instance;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
-import software.amazon.awssdk.core.sync.ResponseTransformer;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import com.amazonaws.util.IOUtils;
 import weka.classifiers.Evaluation;
 
 import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.meta.FilteredClassifier;
-import weka.classifiers.trees.J48;
-import weka.classifiers.trees.RandomForest;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -140,7 +136,7 @@ public class Classifier {
 
             // Use the last classifier (from the 10th fold) to classify,
             // and fetch 10 pairs from each TP/TN/FP/FN instance.
-            Instance instance, lastInstance = data.lastInstance();
+            Instance instance, lastInstance = (Instance) data.lastInstance();
             boolean correctClassValue, predictedClassValue;
             List<Instance>
                     tp = new ArrayList<>(),
@@ -150,7 +146,7 @@ public class Classifier {
 
             // Get the first instance
             int i = 0;
-            instance = data.instance(i);
+            instance = (Instance) data.instance(i);
 
             while ((tp.size() < 10 || tn.size() < 10 || fp.size() < 10 || fn.size() < 10) && !instance.equals(lastInstance)) {
                 //correct class value.
@@ -213,18 +209,18 @@ public class Classifier {
         }
     }
 
-    public static String[] getFeatures() {
-        String filename = "features" + dpMin + ".txt";
-//        String filename="features25"+".txt";
-        AmazonS3 s3 = (AmazonS3) ((AmazonS3ClientBuilder) AmazonS3Client.builder().withRegion(Regions.US_EAST_1)).build();
-        S3Object s3Object = s3.getObject(MainLogic.BUCKET_PATH, filename);
-        InputStream objectContent = s3Object.getObjectContent();
+    public static String[] getFeatures() throws IOException {
+        String fileName = "features" + dpMin + ".txt";
 
-//        S3Client s3= S3Client.builder().region(Region.US_EAST_1).build();
-        s3.getObject(GetObjectRequest.builder().bucket(MainLogic.BUCKET_PATH).key(filename).build()
-                , ResponseTransformer.toFile(Paths.get(filename)));
+        AmazonS3 s3 = (AmazonS3) ((AmazonS3ClientBuilder) AmazonS3Client.builder().withRegion(Regions.US_EAST_1)).build();
+        S3Object s3Object = s3.getObject(MainLogic.BUCKET_PATH, fileName);
+        InputStream inputStream = s3Object.getObjectContent();
+        OutputStream outputStream = Files.newOutputStream(Paths.get(fileName));
+        IOUtils.copy(inputStream, outputStream);
+
+//        s3Object.getObjectContent().transferTo(Files.newOutputStream(Paths.get(fileName)));
         try {
-            FileReader fileReader = new FileReader(filename);
+            FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             List<String> lines = new ArrayList<>();
             String line = null;
@@ -238,7 +234,7 @@ public class Classifier {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         features = getFeatures();
         // System.out.println("Num of features: " + features.length); todo: delete when finish running
         parsingOutput();
