@@ -41,14 +41,15 @@ a method of evaluating a model's performance by dividing the data into 10 subset
 
 ### Program components :
 
-###### components in step 1 (PatternParser) :
+##### components in step 1 (PatternParser) :
 1. Dependency Tree - represent a sentence in a form of dependency tree. uses to get the patterns between different nodes (words).
 2. Node - represent a single node from the dependency tree.
 
-###### components in step 2 (FeaturesVectorBuilder) :
+##### components in step 2 (FeaturesVectorBuilder) :
 1. PatternInfo - ????
-* shared components :
-1. PairOfNouns - represents a pair of noun taken from an input sentence (contains a boolean indicates whether the pairs are 
+
+##### shared components :
+3. PairOfNouns - represents a pair of noun taken from an input sentence (contains a boolean indicates whether the pairs are 
 hpernm and holds a counter represent the total count of the specific pair).
 2. FeaturesVectorLength - ????
 
