@@ -111,7 +111,6 @@ DPmin=100:
 
 
 ### Analysis :
-####Explanations for the False Classes:
 - False Positive:
   dog book
   two level
