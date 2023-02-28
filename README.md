@@ -18,19 +18,19 @@ of words that appear in the 'Biarcs' data set. each special path - mark as a pat
 The first part of the program is built using MapReduce system consist of 2 steps - PatternParser & FeaturesVectorBuilder
 
 1) step 1 - PatternParser :
-###### Mapper :
+* Mapper :
 Gets the ngram resource input (Google Syntactic Ngrams) and parses each sentence to a dependency tree. 
 after creating the tree - creates a key value output for each path in the tree : <String pattern, Noun pair>. 
-###### Reducer :
+* Reducer :
 Creates an output (key, value) only for the patterns that has more noun pairs than dpmin.
 those patterns will be considered as Features and will appear in the final vector with special index entry. 
 <Key, value> : <NounPair, index of the pattern in the final vector>. 
 
 2) step 2 - FeaturesVectorBuilder
 The input for the second step: (1) the patterns with their specific index (from step1) (2) The given annotated set (hypernym.txt).
-###### Mapper : ?
+* Mapper : ?
 The Map step of the second job is to go over the annotated set and the output pairs from the first job and to create to following output :
-###### Reducer : ?
+* Reducer : ?
  
 
 ##### Second part -
