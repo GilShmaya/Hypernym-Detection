@@ -1,9 +1,9 @@
 # Hypernym-Detection
 
 
-*** Design :
+### Design :
 
-** Overview Program Flow :
+#### Overview Program Flow :
 
 In this assignment we experienced with a research paper - "Learning syntactic patterns for automatic hypernym discovery",
 
