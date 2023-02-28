@@ -61,27 +61,79 @@ a method of evaluating a model's performance by dividing the data into 10 subset
 * Dependency Tree - represent a sentence in a form of dependency tree. uses to get the patterns between different nodes (words).
 * Node - represent a single node from the dependency tree.
 
-##### components in step 2 (FeaturesVectorBuilder) :
-* PatternInfo - ????
-
 ##### shared components :
 * PairOfNouns - represents a pair of noun taken from an input sentence (contains a boolean indicates whether the pairs are 
 hpernm and holds a counter represent the total count of the specific pair).
-* FeaturesVectorLength - ????
+* FeaturesVectorLength - a singleton class that responsible for export and import the features vector length to S3.
 
 
 
 
 ### Communication : 
-
-
+step1:    
+    Map input records=21471169
+    Map output records=9625754
+		Map output bytes=345408131
+		Map output materialized bytes=100806078
+		Input split bytes=508
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=20261
+		Reduce shuffle bytes=100806078
+		Reduce input records=9625754
+		Reduce output records=9430041
+step2:
+    Map input records=9572566
+		Map output records=9572566
+		Map output bytes=248809615
+		Map output materialized bytes=66704952
+		Input split bytes=1533
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=1447410
+		Reduce shuffle bytes=66704952
+		Reduce input records=9572566
+		Reduce output records=1296608
 
 
 ### Results (Precision, Recall and F1 measures) :
+DPmin = 50:
+- Precision ~ 0.71
+- F1 measures ~ 0.76
+- Recall ~ 0.95
+
+DPmin=100:
+- Precision - 0.74
+- F1 measures - 0.85
+- Recall - 0.97
 
 
 
 
 ### Analysis :
+####Explanations for the False Classes:
+- False Positive:
+  dog book
+  two level
+  Tree Negative 
+  red type
+  1950 industri
 
+- True Positive:
+ 1 number
+ 2010 year
+ -1 Negative
+ cat pet
+ blue color
+
+- False Negative –
+  left direction
+  exciting emotion
+  rock music
+  submit action
+
+
+Upon examining the vectors of the false noun-pair classes generated in the second map-reduce phase, we observed that they generally had low values and sparse vectors compared to the positive noun-pair classes. Consequently, it is probable that the classifier lacks adequate information to accurately classify these noun-pairs.
+
+It is evident that many of the false cases in classification arise due to the presence of the postTags 'in' or 'to' in the shortest path between the words of the noun-pair. This occurrence is common in both true positive and true negative classifications and therefore decreases the accuracy of the classifier. For instance, the shortest path for the true positive noun-pair "1 number" contains the dependency relation 'nn:dep:in:prep:nns', while the false positive noun-pair has a dependency relation of 'nns:pobj:in:prep:nns'.
 
