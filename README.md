@@ -17,7 +17,18 @@ of words that appear in the 'Biarcs' data set. each special path - mark as a pat
 
 The first part of the program is built using MapReduce system consist of 2 steps - PatternParser & FeaturesVectorBuilder
 
-2) step 2 - FeaturesVectorBuilder
+1. step 1 - PatternParser
+
+The PatternParser job is responsible for the following:
+ * Parse each sentence to a dependency tree
+ * Check for each pattern if there are less distinct noun pairs than dpmin.
+
+Mapper: 
+- Mapper class : Map every line of PatternParser's output into a dependency tree and for each path in the tree creates the output :
+<Pattern, PairofNouns>
+- Reducer: emit <PairOfNouns, index> for every noun of pairs that has more noun pairs than dpmin.
+
+2. step 2 - FeaturesVectorBuilder
 
 The FeaturesVectorBuilder job is responsible for the following:
 * Parse the data from the annotated set.
@@ -26,7 +37,7 @@ The FeaturesVectorBuilder job is responsible for the following:
 * Create a features vector for each noun pair 
 
 Mapper: 
-- Mapper class : Map every line of PatternParser's output into <pairOfNouns(w1, w2, false, total), patternIndex>
+- Mapper class : Map every sentence from the Ngrams input into <pairOfNouns(w1, w2, false, total), patternIndex>
 - MapperClassAnnotated : Map every line of the annotated set into <pairOfNouns(w1, w2, isHypernym, -1), -1>
 
 Reducer: Creates a features vector for each noun pair.
