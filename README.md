@@ -103,9 +103,9 @@ DPmin = 50:
 - Recall ~ 0.95
 
 DPmin=100:
-- Precision - 0.74
-- F1 measures - 0.85
-- Recall - 0.97
+- Precision ~ 0.74
+- F1 measures ~ 0.85
+- Recall ~ 0.97
 
 
 
