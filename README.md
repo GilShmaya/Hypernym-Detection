@@ -13,11 +13,11 @@ of words that appear in the 'Biarcs' data set. each special path - mark as a pat
 4. Training part: building a classifier-  using Weka software for classification, based on the results from the map-reduce steps (features vector) and the annotated set we train a classifier that determine if a noun pair is in the hypernym/hyponym relation or not.
 
 
-##### First part - 
+#### First part - 
 
 The first part of the program is built using MapReduce system consist of 2 steps - PatternParser & FeaturesVectorBuilder
 
-1. step 1 - PatternParser
+##### step 1 - PatternParser
 
 The PatternParser job is responsible for the following:
  * Parse each sentence to a dependency tree
@@ -28,7 +28,7 @@ Mapper:
 <Pattern, PairofNouns>
 - Reducer: emit <PairOfNouns, index> for every noun of pairs that has more noun pairs than dpmin.
 
-2. step 2 - FeaturesVectorBuilder
+##### step 2 - FeaturesVectorBuilder
 
 The FeaturesVectorBuilder job is responsible for the following:
 * Parse the data from the annotated set.
